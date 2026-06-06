@@ -16,7 +16,7 @@ class SingleCoreAnalyzer(BaseCableAnalyzer):
         contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         
         if not contours:
-            raise ValueError("Kontur bulunamadı.")
+            raise ValueError("Kontur bulunamadi.")
             
         contours = sorted(contours, key=cv2.contourArea, reverse=True)
         outer_contour = contours[0]
@@ -32,10 +32,10 @@ class SingleCoreAnalyzer(BaseCableAnalyzer):
                 inner_contours.append(c)
                 
         if len(inner_contours) > 1:
-            raise ValueError("Kablo tipi uyuşmazlığı: Görüntüde çoklu damar tespit edildi ancak 'Tek Damarlı' seçeneği işaretlendi. Lütfen kablo tipini doğru seçin.")
+            raise ValueError("Kablo tipi uyusmazligi: Goruntude coklu damar tespit edildi ancak 'Tek Damarli' secenegi isaretlendi. Lutfen kablo tipini dogru secin.")
         
         if len(inner_contours) == 0:
-            raise ValueError("İç damar (iletken) bulunamadı.")
+            raise ValueError("Ic damar (iletken) bulunamadi.")
             
         inner_contour = inner_contours[0]
         
@@ -49,7 +49,7 @@ class SingleCoreAnalyzer(BaseCableAnalyzer):
                     large_defects += 1
                     
         if large_defects >= 2:
-            raise ValueError("Kablo tipi uyuşmazlığı: Görüntüde çoklu damar tespit edildi ancak 'Tek Damarlı' seçeneği işaretlendi. Lütfen kablo tipini doğru seçin.")
+            raise ValueError("Kablo tipi uyusmazligi: Goruntude coklu damar tespit edildi ancak 'Tek Damarli' secenegi isaretlendi. Lutfen kablo tipini dogru secin.")
             
         (ix, iy), inner_radius = cv2.minEnclosingCircle(inner_contour)
         inner_center = (int(ix), int(iy))

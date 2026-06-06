@@ -35,6 +35,10 @@ class ThreeCoreAnalyzer(BaseCableAnalyzer):
                 
         inner_contours = sorted(inner_contours, key=cv2.contourArea, reverse=True)[:3]
         
+        if len(inner_contours) > 0:
+            if cv2.contourArea(inner_contours[0]) / cv2.contourArea(outer_contour) > 0.5:
+                raise ValueError("Kablo tipi uyusmazligi: Goruntude tek damarli bir iletken tespit edildi ancak 'Cok Damarli' secenegi isaretlendi. Lutfen kablo tipini dogru secin.")
+        
         if len(inner_contours) < 2:
             if len(inner_contours) == 1:
                 inner_contour = inner_contours[0]
@@ -47,13 +51,13 @@ class ThreeCoreAnalyzer(BaseCableAnalyzer):
                         if d > 5000:
                             large_defects += 1
                 if large_defects < 2:
-                    raise ValueError("Kablo tipi uyuşmazlığı: Görüntüde yeterli damar tespit edilemedi ancak 'Çok Damarlı' seçeneği işaretlendi. Lütfen kablo tipini doğru seçin.")
+                    raise ValueError("Kablo tipi uyusmazligi: Goruntude yeterli damar tespit edilemedi ancak 'Cok Damarli' secenegi isaretlendi. Lutfen kablo tipini dogru secin.")
                 else:
                     (ix, iy), inner_radius = cv2.minEnclosingCircle(inner_contour)
                     inner_center = (int(ix), int(iy))
                     inner_diameter_px = inner_radius * 2
             else:
-                raise ValueError("Kablo tipi uyuşmazlığı: Görüntüde yeterli damar tespit edilemedi ancak 'Çok Damarlı' seçeneği işaretlendi. Lütfen kablo tipini doğru seçin.")
+                raise ValueError("Kablo tipi uyusmazligi: Goruntude yeterli damar tespit edilemedi ancak 'Cok Damarli' secenegi isaretlendi. Lutfen kablo tipini dogru secin.")
         else:
             all_inner_pts = np.vstack(inner_contours)
             (ix, iy), inner_radius = cv2.minEnclosingCircle(all_inner_pts)
