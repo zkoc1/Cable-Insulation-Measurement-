@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kablo İzolasyon Ölçüm Sistemi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="glass-container">
+        <header>
+            <h1>Kablo İzolasyon Ölçümü</h1>
+        </header>
+
+        <main class="dashboard">
+            <section class="control-panel glass-card">
+                <h2>Kontrol Paneli</h2>
+                <form id="controlForm">
+                    <div class="input-group">
+                        <label for="cableType">Kablo Tipi</label>
+                        <select id="cableType" name="cableType">
+                            <option value="single">Tek Damarlı</option>
+                            <option value="multi" selected>Çok Damarlı (3 Delikli)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sectionId">Kesit ID</label>
+                        <input type="text" id="sectionId" name="sectionId" placeholder="Örn: KST-001">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sectionDate">Kesit Alınma Tarihi</label>
+                        <input type="date" id="sectionDate" name="sectionDate">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="pixelToMm">Piksel-mm Katsayısı</label>
+                        <input type="number" id="pixelToMm" name="pixelToMm" step="0.0001" value="0.02">
+                    </div>
+
+                    <div class="input-group file-input-group">
+                        <label for="imageUpload" class="file-label">Görüntü Seç (Simüle Edilebilir)</label>
+                        <input type="file" id="imageUpload" name="imageUpload" accept="image/*">
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" id="btnCapture" class="btn primary">Görüntü Al</button>
+                        <button type="submit" id="btnCalculate" class="btn success">Hesapla</button>
+                        <button type="button" id="btnRefresh" class="btn warning">Yenile</button>
+                        <button type="button" id="btnReport" class="btn info" disabled>Rapor Oluştur</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="results-panel glass-card">
+                <h2>Analiz Sonuçları</h2>
+                <div class="visual-result">
+                    <img id="resultImage" src="" alt="Sonuç Görüntüsü" style="display: none;">
+                    <div id="imagePlaceholder">Görüntü Bekleniyor...</div>
+                </div>
+
+                <div class="table-container">
+                    <table id="resultsTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Parametre</th>
+                                <th>Değer</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
