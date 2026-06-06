@@ -9,10 +9,13 @@ class MultiStrandedAnalyzer(BaseCableAnalyzer):
         if img is None:
             raise ValueError("Goruntu okunamadi.")
             
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        h, s, v = cv2.split(hsv)
+        inv_v = cv2.bitwise_not(v)
+        combined = cv2.addWeighted(inv_v, 0.5, s, 0.5, 0)
         
-        _, thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+        blurred = cv2.GaussianBlur(combined, (5, 5), 0)
+        _, thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
         contours, _ = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         
         if not contours:
