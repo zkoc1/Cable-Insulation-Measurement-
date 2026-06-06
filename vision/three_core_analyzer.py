@@ -36,12 +36,29 @@ class ThreeCoreAnalyzer(BaseCableAnalyzer):
         inner_contours = sorted(inner_contours, key=cv2.contourArea, reverse=True)[:3]
         
         if len(inner_contours) < 2:
-            raise ValueError("Kablo tipi uyuşmazlığı: Görüntüde yeterli damar tespit edilemedi ancak 'Çok Damarlı' seçeneği işaretlendi. Lütfen kablo tipini doğru seçin.")
-            
-        all_inner_pts = np.vstack(inner_contours)
-        (ix, iy), inner_radius = cv2.minEnclosingCircle(all_inner_pts)
-        inner_center = (int(ix), int(iy))
-        inner_diameter_px = inner_radius * 2
+            if len(inner_contours) == 1:
+                inner_contour = inner_contours[0]
+                hull = cv2.convexHull(inner_contour, returnPoints=False)
+                defects = cv2.convexityDefects(inner_contour, hull)
+                large_defects = 0
+                if defects is not None:
+                    for j in range(defects.shape[0]):
+                        s,e,f,d = defects[j,0]
+                        if d > 5000:
+                            large_defects += 1
+                if large_defects < 2:
+                    raise ValueError("Kablo tipi uyuşmazlığı: Görüntüde yeterli damar tespit edilemedi ancak 'Çok Damarlı' seçeneği işaretlendi. Lütfen kablo tipini doğru seçin.")
+                else:
+                    (ix, iy), inner_radius = cv2.minEnclosingCircle(inner_contour)
+                    inner_center = (int(ix), int(iy))
+                    inner_diameter_px = inner_radius * 2
+            else:
+                raise ValueError("Kablo tipi uyuşmazlığı: Görüntüde yeterli damar tespit edilemedi ancak 'Çok Damarlı' seçeneği işaretlendi. Lütfen kablo tipini doğru seçin.")
+        else:
+            all_inner_pts = np.vstack(inner_contours)
+            (ix, iy), inner_radius = cv2.minEnclosingCircle(all_inner_pts)
+            inner_center = (int(ix), int(iy))
+            inner_diameter_px = inner_radius * 2
             
         eccentricity_px = self.calculate_distance(outer_center, inner_center)
         
