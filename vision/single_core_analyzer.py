@@ -38,6 +38,19 @@ class SingleCoreAnalyzer(BaseCableAnalyzer):
             raise ValueError("İç damar (iletken) bulunamadı.")
             
         inner_contour = inner_contours[0]
+        
+        hull = cv2.convexHull(inner_contour, returnPoints=False)
+        defects = cv2.convexityDefects(inner_contour, hull)
+        large_defects = 0
+        if defects is not None:
+            for j in range(defects.shape[0]):
+                s,e,f,d = defects[j,0]
+                if d > 5000:
+                    large_defects += 1
+                    
+        if large_defects >= 2:
+            raise ValueError("Kablo tipi uyuşmazlığı: Görüntüde çoklu damar tespit edildi ancak 'Tek Damarlı' seçeneği işaretlendi. Lütfen kablo tipini doğru seçin.")
+            
         (ix, iy), inner_radius = cv2.minEnclosingCircle(inner_contour)
         inner_center = (int(ix), int(iy))
         inner_diameter_px = inner_radius * 2
