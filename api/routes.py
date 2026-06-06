@@ -7,6 +7,7 @@ import cv2
 from core.models import MeasurementResult
 from vision.three_core_analyzer import ThreeCoreAnalyzer
 from vision.single_core_analyzer import SingleCoreAnalyzer
+from vision.multi_stranded_analyzer import MultiStrandedAnalyzer
 
 router = APIRouter()
 
@@ -31,6 +32,8 @@ async def measure_cable(
         
     if cable_type == "single":
         analyzer = SingleCoreAnalyzer(pixel_to_mm=pixel_to_mm)
+    elif cable_type == "multi_stranded":
+        analyzer = MultiStrandedAnalyzer(pixel_to_mm=pixel_to_mm)
     else:
         analyzer = ThreeCoreAnalyzer(pixel_to_mm=pixel_to_mm)
         
